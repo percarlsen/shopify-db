@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from tqdm import tqdm
 import requests
 import json
 import pprint
@@ -71,25 +72,32 @@ def shopify_update(
     *args,
     **kwargs,
 ) -> None:
-    update_customers(
-        db, conn, api_url, key, password, created_at_min=created_at_min,
-        created_at_max=created_at_max, limit=250)
-    update_products_and_variants(
-        db, conn, api_url, key, password, created_at_min=created_at_min,
-        created_at_max=created_at_max, limit=250)
-    update_orders(
-        db, conn, api_url, key, password, created_at_min=created_at_min,
-        created_at_max=created_at_max, limit=250)
-    orders = db.get_orders(
-        conn,
-        created_at_min=created_at_min,
-        created_at_max=created_at_max
-    )
-    order_ids = list(orders['id'])
-    update_transactions(db, conn, key, password, order_ids)
-    refunded_order_ids = list(
-        orders[orders.financial_status.str.contains('refund')]['id'])
-    update_refunds(db, conn, key, password, refunded_order_ids)
+    with tqdm(total=6) as pbar:
+        update_customers(
+            db, conn, api_url, key, password, created_at_min=created_at_min,
+            created_at_max=created_at_max, limit=250)
+        pbar.update(1)
+        update_products_and_variants(
+            db, conn, api_url, key, password, created_at_min=created_at_min,
+            created_at_max=created_at_max, limit=250)
+        pbar.update(1)
+        update_orders(
+            db, conn, api_url, key, password, created_at_min=created_at_min,
+            created_at_max=created_at_max, limit=250)
+        pbar.update(1)
+        orders = db.get_orders(
+            conn=conn,
+            created_at_min=created_at_min,
+            created_at_max=created_at_max
+        )
+        pbar.update(1)
+        order_ids = list(orders['id'])
+        update_transactions(db, conn, key, password, order_ids)
+        pbar.update(1)
+        refunded_order_ids = list(
+            orders[orders.financial_status.str.contains('refund')]['id'])
+        update_refunds(db, conn, key, password, refunded_order_ids)
+        pbar.update(1)
 
 
 @subcommand('heatmap')
