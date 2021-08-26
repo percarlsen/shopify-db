@@ -1,17 +1,12 @@
 from __future__ import annotations
 
 from tqdm import tqdm
-import requests
-import json
-import pprint
-import re
 import logging
 import argparse
 import sys
-import os
 import pandas as pd
-import numpy as np
 import datetime
+
 from shopify import (
     update_customers, update_orders, update_transactions, update_refunds,
     update_products_and_variants)
@@ -20,8 +15,7 @@ from tripletex import (
     get_invoices, verify_invoices, replace_invoice_gateway,
     INVOICE_REQUIRED_FIELDS, INVOICE_OPTIONAL_FIELDS)
 from utils import create_shipping_heatmap
-from pathlib import Path
-from typing import TypeVar, MutableMapping, Mapping, Callable, Union
+from typing import TypeVar, MutableMapping, Mapping, Callable
 
 
 FT = TypeVar('FT')

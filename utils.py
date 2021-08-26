@@ -1,7 +1,7 @@
 import folium as fm
 import pandas as pd
+import numpy as np
 from folium.plugins import HeatMap
-
 
 
 def create_shipping_heatmap(
