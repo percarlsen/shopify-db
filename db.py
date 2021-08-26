@@ -33,7 +33,9 @@ class Db(object):
         Connect to postgres database
     """
 
-    def connect(self):  # -> psycopg2.connector:
+    def connect(
+        self
+    ):  # -> psycopg2.connector:
         """ Connect to postgres database
         Returns
         ----------
@@ -56,10 +58,20 @@ class Db(object):
 
         return conn
 
-    def disconnect(self, conn):
+    def disconnect(
+        self,
+        conn,
+        *args,
+        **kwargs,
+    ) -> None:
         conn.close()
 
-    def get_shipping(self, conn) -> pd.DataFrame:
+    def get_shipping(
+        self,
+        conn,
+        *args,
+        **kwargs,
+    ) -> pd.DataFrame:
         try:
             query = 'SELECT * FROM shipping;'
             return pd.read_sql(sql=query, con=conn)
@@ -67,7 +79,12 @@ class Db(object):
             raise Exception(f"Could not retrieve shipping from db. {e}")
 
     def get_orders(
-        self, conn, created_at_min=None, created_at_max=None
+        self,
+        conn,
+        *args,
+        created_at_min=None,
+        created_at_max=None,
+        **kwargs,
     ) -> pd.DataFrame:
         try:
             if created_at_min and created_at_max:
@@ -95,7 +112,13 @@ class Db(object):
         except Exception as e:
             raise Exception(f"Could not retrieve orders from db. {e}")
 
-    def update_orders(self, conn, orders) -> None:
+    def update_orders(
+        self,
+        conn,
+        orders,
+        *args,
+        **kwargs,
+    ) -> None:
         cur = conn.cursor()
         columns = orders[0].keys()
         values = [[i for i in order.values()] for order in orders]
@@ -120,7 +143,13 @@ class Db(object):
         execute_values(cur, query, values)
         conn.commit()
 
-    def update_discounts(self, conn, discounts) -> None:
+    def update_discounts(
+        self,
+        conn,
+        discounts,
+        *args,
+        **kwargs,
+    ) -> None:
         cur = conn.cursor()
         columns = discounts[0].keys()
         values = [[i for i in discount.values()] for discount in discounts]
@@ -138,7 +167,13 @@ class Db(object):
         execute_values(cur, query, values)
         conn.commit()
 
-    def update_transactions(self, conn, transactions) -> None:
+    def update_transactions(
+        self,
+        conn,
+        transactions,
+        *args,
+        **kwargs,
+    ) -> None:
         if len(transactions):
             cur = conn.cursor()
             columns = transactions[0].keys()
@@ -161,7 +196,13 @@ class Db(object):
             execute_values(cur, query, values)
             conn.commit()
 
-    def update_refunds(self, conn, refunds) -> None:
+    def update_refunds(
+        self,
+        conn,
+        refunds,
+        *args,
+        **kwargs,
+    ) -> None:
         if len(refunds):
             cur = conn.cursor()
             columns = refunds[0].keys()
@@ -182,7 +223,13 @@ class Db(object):
             execute_values(cur, query, values)
             conn.commit()
 
-    def update_refund_line_items(self, conn, refund_line_items) -> None:
+    def update_refund_line_items(
+        self,
+        conn,
+        refund_line_items,
+        *args,
+        **kwargs,
+    ) -> None:
         if len(refund_line_items):
             cur = conn.cursor()
             columns = refund_line_items[0].keys()
@@ -202,7 +249,13 @@ class Db(object):
             execute_values(cur, query, values)
             conn.commit()
 
-    def update_customers(self, conn, customers) -> None:
+    def update_customers(
+        self,
+        conn,
+        customers,
+        *args,
+        **kwargs,
+    ) -> None:
         cur = conn.cursor()
         columns = customers[0].keys()
         values = [[i for i in c.values()] for c in customers]
@@ -230,7 +283,13 @@ class Db(object):
         execute_values(cur, query, values)
         conn.commit()
 
-    def update_line_item_products(self, conn, line_item_products) -> None:
+    def update_line_item_products(
+        self,
+        conn,
+        line_item_products,
+        *args,
+        **kwargs,
+    ) -> None:
         cur = conn.cursor()
         columns = line_item_products[0].keys()
         values = [[i for i in li.values()] for li in line_item_products]
@@ -258,7 +317,13 @@ class Db(object):
         execute_values(cur, query, values)
         conn.commit()
 
-    def update_shipping(self, conn, shipping) -> None:
+    def update_shipping(
+        self,
+        conn,
+        shipping,
+        *args,
+        **kwargs,
+    ) -> None:
         cur = conn.cursor()
         columns = shipping[0].keys()
         values = [[i for i in s.values()] for s in shipping]
@@ -286,7 +351,13 @@ class Db(object):
         execute_values(cur, query, values)
         conn.commit()
 
-    def update_products(self, conn, products) -> None:
+    def update_products(
+        self,
+        conn,
+        products,
+        *args,
+        **kwargs,
+    ) -> None:
         cur = conn.cursor()
         columns = products[0].keys()
         values = [[i for i in product.values()] for product in products]
@@ -306,7 +377,13 @@ class Db(object):
         execute_values(cur, query, values)
         conn.commit()
 
-    def update_product_variants(self, conn, product_variants) -> None:
+    def update_product_variants(
+        self,
+        conn,
+        product_variants,
+        *args,
+        **kwargs,
+    ) -> None:
         cur = conn.cursor()
         columns = product_variants[0].keys()
         values = [[i for i in pv.values()] for pv in product_variants]
@@ -335,6 +412,8 @@ class Db(object):
         from_date: datetime.date.fromisoformat,
         to_date: datetime.date.fromisoformat,
         invoice_start_id: int,
+        *args,
+        **kwargs,
     ) -> pd.DataFrame:
         """ Get ordes in the appropriate format for Tripletex
 
@@ -403,7 +482,12 @@ class Db(object):
             raise Exception(
                 f'Could not retrieve invoices for tripletex from db. {e}')
 
-    def create_product_table(self, conn) -> None:
+    def create_product_table(
+        self,
+        conn,
+        *args,
+        **kwargs,
+    ) -> None:
         """ Create product table if it doesnt exist
 
         Parameters
@@ -426,7 +510,12 @@ class Db(object):
         )
         conn.commit()
 
-    def get_all_products(self, conn) -> pd.DataFrame:
+    def get_all_products(
+        self,
+        conn,
+        *args,
+        **kwargs,
+    ) -> pd.DataFrame:
         """ Retrieve all products from database
 
         Parameters
@@ -448,7 +537,13 @@ class Db(object):
         except Exception as e:
             raise Exception(f"Could not retrieve products from db. {e}")
 
-    def get_product_by_name(self, conn, product) -> None:
+    def get_product_by_name(
+        self,
+        conn,
+        product,
+        *args,
+        **kwargs,
+    ) -> None:
         """ Retrieve product by product name
 
         Parameters
@@ -476,7 +571,13 @@ class Db(object):
         except Exception as e:
             raise Exception(f"Could not retrieve {product} from db. {e}")
 
-    def update_product(self, conn, product) -> None:
+    def update_product(
+        self,
+        conn,
+        product,
+        *args,
+        **kwargs,
+    ) -> None:
         """ Update or add new product to database
 
         Parameters

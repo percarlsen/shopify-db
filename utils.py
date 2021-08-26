@@ -1,8 +1,15 @@
 import folium as fm
+import pandas as pd
 from folium.plugins import HeatMap
 
 
-def create_shipping_heatmap(db, conn):
+
+def create_shipping_heatmap(
+    db,
+    conn,
+    *args,
+    **kwargs,
+) -> fm.Map:
     df = db.get_shipping(conn)
     df.dropna(subset=['latitude', 'longitude'], inplace=True)
     m = fm.Map(
@@ -16,7 +23,11 @@ def create_shipping_heatmap(db, conn):
     return m
 
 
-def id_nan_to_none(df):
+def id_nan_to_none(
+    df: pd.DataFrame,
+    *args,
+    **kwargs,
+) -> pd.DataFrame:
     ''' Replace np.nan with None in any column with "id" in its name
 
     Useful since Postgres does not allow NaN values in the Bigint datatype, but

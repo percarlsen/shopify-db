@@ -93,7 +93,11 @@ REFUND_FIELDS = [
 ]
 
 
-def pagination_links(rest_header):
+def pagination_links(
+    rest_header,
+    *args,
+    **kwargs,
+) -> dict:
     links = dict(next=None, previous=None)
     if 'Link' not in rest_header:
         return links
@@ -112,10 +116,13 @@ def fetch_all(
         reference,
         fields,
         limit,
+        *args,
         created_at_min=None,
         created_at_max=None,
         filter_on_status=True,
-        page=None):
+        page=None,
+        **kwargs,
+) -> tuple:
     links = dict(next=None, previous=None)
     retries = 0
     current_wait_time = _RETRY_WAIT_TIME
@@ -157,7 +164,13 @@ def fetch_all(
 
 
 def fetch_single(
-    api_key, api_pass, fields, order_id, endpoint
+    api_key,
+    api_pass,
+    fields,
+    order_id,
+    endpoint,
+    *args,
+    **kwargs,
 ) -> dict:
     url = (
         f'https://smeig.myshopify.com/admin/api/2021-04/'
@@ -191,9 +204,17 @@ def fetch_single(
 
 
 def update_customers(
-    db, conn, url, api_key, api_pass,
-    endpoint='customers.json', created_at_min=None,
-    created_at_max=None, limit=250
+    db,
+    conn,
+    url,
+    api_key,
+    api_pass,
+    *args,
+    endpoint='customers.json',
+    created_at_min=None,
+    created_at_max=None,
+    limit=250,
+    **kwargs,
 ) -> None:
     url = f'{url}{endpoint}'
     page = None
@@ -234,7 +255,17 @@ def update_customers(
 
 
 def update_orders(
-    db, conn, url, api_key, api_pass, endpoint='orders.json', created_at_min=None, created_at_max=None, limit=250
+    db,
+    conn,
+    url,
+    api_key,
+    api_pass,
+    *args,
+    endpoint='orders.json',
+    created_at_min=None,
+    created_at_max=None,
+    limit=250,
+    **kwargs
 ) -> None:
     url = f'{url}{endpoint}'
     page = None
@@ -342,7 +373,13 @@ def update_orders(
 
 
 def update_transactions(
-    db, conn, api_key, api_pass, order_ids
+    db,
+    conn,
+    api_key,
+    api_pass,
+    order_ids,
+    *args,
+    **kwargs,
 ) -> None:
     if len(order_ids) > 100:
         logging.warning(
@@ -380,7 +417,15 @@ def update_transactions(
     logging.info(f'Updated {transactions_cnt} transactions')
 
 
-def update_refunds(db, conn, api_key, api_pass, order_ids) -> None:
+def update_refunds(
+    db,
+    conn,
+    api_key,
+    api_pass,
+    order_ids,
+    *args,
+    **kwargs,
+) -> None:
     if len(order_ids) > 100:
         logging.warning(
             f'Fetching refunds for {len(order_ids)} orders may '
@@ -432,9 +477,17 @@ def update_refunds(db, conn, api_key, api_pass, order_ids) -> None:
 
 
 def update_products_and_variants(
-    db, conn, url, api_key, api_pass,
-    endpoint='products.json', created_at_min=None,
-    created_at_max=None, limit=250
+    db,
+    conn,
+    url,
+    api_key,
+    api_pass,
+    *args,
+    endpoint='products.json',
+    created_at_min=None,
+    created_at_max=None,
+    limit=250,
+    **kwargs,
 ) -> None:
     url = f'{url}{endpoint}'
     page = None

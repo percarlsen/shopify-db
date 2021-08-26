@@ -27,7 +27,11 @@ INVOICE_OPTIONAL_FIELDS = [
 ]
 
 
-def _none_values(df) -> bool:
+def _none_values(
+    df: pd.DataFrame,
+    *args,
+    **kwargs,
+) -> bool:
     for i in INVOICE_REQUIRED_FIELDS:
         missing = df.loc[df[i].isna()]['ORDER NO'].unique()
         if len(missing):
@@ -38,7 +42,11 @@ def _none_values(df) -> bool:
     return len(missing) == 0
 
 
-def _description_or_sku(df) -> bool:
+def _description_or_sku(
+    df: pd.DataFrame,
+    *args,
+    **kwargs,
+) -> bool:
     errors = (
         df.loc[
             df[['ORDER LINE - PROD NO', 'ORDER LINE - DESCRIPTION']]
@@ -54,7 +62,11 @@ def _description_or_sku(df) -> bool:
     return len(errors) == 0
 
 
-def _order_no(df) -> bool:
+def _order_no(
+    df: pd.DataFrame,
+    *args,
+    **kwargs,
+) -> bool:
     orders = [
         int(i) for i in df.loc[df['PAID AMOUNT'] >= 0]
         ['ORDER NO'].str[1:].unique()]
@@ -70,7 +82,11 @@ def _order_no(df) -> bool:
     return len(missing_orders) == 0
 
 
-def _invoice_no(df) -> bool:
+def _invoice_no(
+    df: pd.DataFrame,
+    *args,
+    **kwargs,
+) -> bool:
     inv = [
         int(i) for i in df['INVOICE NO'].unique()]
     missing_inv = [
@@ -83,7 +99,11 @@ def _invoice_no(df) -> bool:
     return len(missing_inv) == 0
 
 
-def _price(df) -> bool:
+def _price(
+    df: pd.DataFrame,
+    *args,
+    **kwargs,
+) -> bool:
     df['price_after_discount'] = (
         df['ORDER LINE - COUNT'] * df['ORDER LINE - UNIT PRICE']
         * (100 - df['ORDER LINE - DISCOUNT']) / 100
@@ -105,7 +125,11 @@ def _price(df) -> bool:
     return len(price_mismatch) == 0
 
 
-def _refunds(df) -> bool:
+def _refunds(
+    df: pd.DataFrame,
+    *args,
+    **kwargs,
+) -> bool:
     refunds = sorted(set(list(df.loc[df['PAID AMOUNT'] <= 0]['ORDER NO'])))
     if len(refunds):
         logging.warning(
@@ -115,7 +139,12 @@ def _refunds(df) -> bool:
     return len(refunds) == 0
 
 
-def _unknown_gateway(df, gateway) -> bool:
+def _unknown_gateway(
+    df: pd.DataFrame,
+    gateway: list,
+    *args,
+    **kwargs,
+) -> bool:
     if gateway is None:
         return True
     flagged_gw = (
@@ -133,7 +162,11 @@ def _unknown_gateway(df, gateway) -> bool:
     return len(flagged_gw) == 0
 
 
-def _gift_cards(df) -> bool:
+def _gift_cards(
+    df: pd.DataFrame,
+    *args,
+    **kwargs,
+) -> bool:
     gift_cards = sorted(set(list(
         df.loc[df['ORDER LINE - PROD NO'] == 'GIFTCARD']['ORDER NO'])))
     if len(gift_cards):
@@ -150,6 +183,8 @@ def get_invoices(
     from_date: datetime.date.fromisoformat,
     to_date: datetime.date.fromisoformat,
     invoice_start_id: int,
+    *args,
+    **kwargs,
 ) -> pd.DataFrame:
     return db.get_tripletex_invoice(
         conn, from_date, to_date, invoice_start_id
@@ -157,16 +192,20 @@ def get_invoices(
 
 
 def replace_invoice_gateway(
-    df,
-    gateway
+    df: pd.DataFrame,
+    gateway,
+    *args,
+    **kwargs,
 ) -> pd.DataFrame:
     df['PAYMENT TYPE'].replace(gateway, inplace=True)
     return df
 
 
 def verify_invoices(
-    df,
-    gateway
+    df: pd.DataFrame,
+    gateway,
+    *args,
+    **kwargs,
 ) -> bool:
     df = df.replace('', np.nan)
     df.fillna(value=np.nan, inplace=True)

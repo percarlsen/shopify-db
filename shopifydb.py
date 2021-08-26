@@ -68,8 +68,8 @@ def shopify_update(
     password: str,
     created_at_min,
     created_at_max,
-    limit: int = 250,
     *args,
+    limit: int = 250,
     **kwargs,
 ) -> None:
     with tqdm(total=6) as pbar:
