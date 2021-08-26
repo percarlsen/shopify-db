@@ -2,14 +2,6 @@
 
 Shopify-db fetches essential information on customers, products, inventory and orders from your shopify store via shopify's APIs and stores it in a postgres database. Useful for backup, ad-hoc queries, analytics and integration purposes (e.g. [integration with the Norwegian accounting software Tripletex ](##tripletex-integration)).
 
-
-## TODO
-* Add support for credentials in the postgres database.
-* Add progress bars.
-* Comment code and functions.
-* Connect to tripletex API.
-* Instagram analytics.
-
 ## Getting started
 1. __Set up a private app to access the shopify APIs:__ Enable private app development, create a private app and copy the app's credentials (API key and password). `shopify-db` uses the credentials to connect to your store, and will never be shared or used for other purposes. [This guide](https://help.shopify.com/en/manual/apps/private-apps) walks through the process. Make sure that the app has read access to customers, discounts, orders, gift cards, inventory, locations, products, shipping, shop locale and payments. Name the app as you want.
 
@@ -51,3 +43,11 @@ python shopifydb.py -v <store name> <api key> <api password> tripletex-verify in
 The invoice file is ready to be directly uploaded in Tripletex under 'Faktura > Fakturaimport'. Make sure to check the 'VAT included'-checkbox.
 
 For more details and help, run `tripletex-generate -h`.
+
+## TODO
+* Add support for credentials in the postgres database.
+* Comment code and functions.
+* Tripletex: review gift cards.
+* Tripletex: connect to invoice API.
+* Tripletex: review order customer name (change from shipping name to order name).
+* Instagram analytics.
