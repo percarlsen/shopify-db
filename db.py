@@ -355,7 +355,7 @@ class Db(object):
                     WITH invoice AS (
                         SELECT *
                         FROM tripletex_invoice
-                        WHERE "ORDER DATE" BETWEEN %s AND %s
+                        WHERE "INVOICE DATE" BETWEEN %s AND %s
                     )
                     SELECT
                         ti.transaction_id,

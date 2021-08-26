@@ -229,9 +229,9 @@ CREATE VIEW tripletex_invoice AS (
             NULL::TEXT AS "ORDER LINE - DESCRIPTION", -- No description needed
             'GIFTCARD' AS "ORDER LINE - PROD NO",
             stp.gateway AS "PAYMENT TYPE",
-            DATE(t.created_at) AS "INVOICE DATE",
+            DATE(o.created_at) AS "INVOICE DATE",
             DATE(t.processed_at) AS "DELIVERY DATE",
-            DATE(t.created_at) AS "ORDER DATE",
+            DATE(o.created_at) AS "ORDER DATE",
             DATE(t.processed_at) AS "DUE DATE",
             1 AS rank, -- dummy, needed to match shipping_lines cols
             4 AS priority
@@ -265,9 +265,9 @@ CREATE VIEW tripletex_invoice AS (
             NULL::TEXT AS "ORDER LINE - DESCRIPTION", -- No description needed
             lip.sku::TEXT AS "ORDER LINE - PROD NO",
             t.gateway AS "PAYMENT TYPE",
-            DATE(t.created_at) AS "INVOICE DATE",
+            DATE(o.created_at) AS "INVOICE DATE",
             DATE(t.processed_at) AS "DELIVERY DATE",
-            DATE(t.created_at) AS "ORDER DATE",
+            DATE(o.created_at) AS "ORDER DATE", -- when the order was crated - need to use the orders table and not transactions table
             DATE(t.processed_at) AS "DUE DATE",
             1 AS rank, -- dummy, needed to match shipping_lines cols
             1 AS priority
@@ -304,9 +304,9 @@ CREATE VIEW tripletex_invoice AS (
             COALESCE(NULLIF(r.note, ''), 'Refund with unspecified reason') AS "ORDER LINE - DESCRIPTION",
             lip.sku::text AS "ORDER LINE - PROD NO",
             t.gateway AS "PAYMENT TYPE",
-            DATE(r.created_at) AS "INVOICE DATE",
+            DATE(r.created_at) AS "INVOICE DATE", -- date of refund
             DATE(r.processed_at) AS "DELIVERY DATE",
-            DATE(r.created_at) AS "ORDER DATE",
+            DATE(o.created_at) AS "ORDER DATE", -- date of order placement
             DATE(r.processed_at) AS "DUE DATE",
             1 AS rank, -- needed to match shipping_lines cols
             2 AS priority
@@ -371,7 +371,7 @@ CREATE VIEW tripletex_invoice AS (
         "ORDER LINE - DESCRIPTION",
         "ORDER LINE - PROD NO",
         "PAYMENT TYPE",
-        "INVOICE DATE",
+        "INVOICE DATE", -- Fakturadato in Tripletex
         "DELIVERY DATE",
         "ORDER DATE",
         "DUE DATE"
@@ -390,7 +390,7 @@ CREATE VIEW tripletex_invoice AS (
     ) AS invoice_lines
     WHERE rank = 1
     ORDER BY
-        "ORDER DATE" DESC, order_id, "CUSTOMER NAME", priority
+        "INVOICE DATE" DESC, order_id, "CUSTOMER NAME", priority
 );
 
 CREATE VIEW tripletex_customer_map AS (

@@ -106,14 +106,13 @@ def _price(df) -> bool:
 
 
 def _refunds(df) -> bool:
-    refunds = set(list(df.loc[df['PAID AMOUNT'] <= 0]['ORDER NO']))
+    refunds = sorted(set(list(df.loc[df['PAID AMOUNT'] <= 0]['ORDER NO'])))
     if len(refunds):
-        logging.info(
-            f'The following {len(refunds)} orders have been '
-            f'refunded and have \'-1\' appended to the order name to ensure '
-            f'unique order numbers in Tripletex: {", ".join(refunds)}'
+        logging.warning(
+            f'The following {len(refunds)} orders are '
+            f'refunds: {", ".join(refunds)}'
         )
-    return True
+    return len(refunds) == 0
 
 
 def _unknown_gateway(df, gateway) -> bool:
@@ -132,6 +131,17 @@ def _unknown_gateway(df, gateway) -> bool:
             f'gateway: \'{i["PAYMENT TYPE"]}\''
         )
     return len(flagged_gw) == 0
+
+
+def _gift_cards(df) -> bool:
+    gift_cards = sorted(set(list(
+        df.loc[df['ORDER LINE - PROD NO'] == 'GIFTCARD']['ORDER NO'])))
+    if len(gift_cards):
+        logging.warning(
+            f'The following {len(gift_cards)} orders include gift cards: '
+            f'{", ".join(gift_cards)}.'
+        )
+    return len(gift_cards) == 0
 
 
 def get_invoices(
@@ -171,22 +181,23 @@ def verify_invoices(
     )
 
     tests_passed = [
+        _refunds(df),
+        _gift_cards(df),
         _order_no(df),
         _invoice_no(df),
         _none_values(df),
         _description_or_sku(df),
         _price(df),
-        _unknown_gateway(df, gateway),
-        _refunds(df)
+        _unknown_gateway(df, gateway)
     ]
     invoice_success = False not in tests_passed
     if invoice_success:
         logging.info(
-            'Invoices were generated without any detected irregularities')
+            'No irregularities detected in the invoices')
     else:
         logging.warning(
-            'Invoices were generated but contain one or more warnings that '
-            'should be checked manually'
+            'Invoices contain one or more notices that should be '
+            'checked manually'
         )
 
     return invoice_success
