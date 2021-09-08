@@ -438,7 +438,6 @@ def update_refunds(
     for ind, i in enumerate(order_ids):
         refunds = fetch_single(
             api_key, api_pass, REFUND_FIELDS, i, 'refunds')
-
         for refund in refunds['refunds']:
             db_refunds.append(
                 dict(
@@ -446,7 +445,7 @@ def update_refunds(
                     order_id=i,
                     transaction_id=refund['transactions'][0]['id'],
                     note=refund['note'],
-                    refund_product_cnt=len(refund['refund_line_items']) or 0,
+                    refunded_product_cnt=len(refund['refund_line_items']) or 0,
                     created_at=refund['created_at'],
                     processed_at=refund['processed_at']
                 )

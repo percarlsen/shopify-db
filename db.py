@@ -215,7 +215,7 @@ class Db(object):
                         order_id = excluded.order_id,
                         transaction_id = excluded.transaction_id,
                         note = excluded.note,
-                        refund_product_cnt = excluded.refund_product_cnt,
+                        refunded_product_cnt = excluded.refunded_product_cnt,
                         created_at = excluded.created_at,
                         processed_at = excluded.processed_at
                 ;
