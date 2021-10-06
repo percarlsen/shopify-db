@@ -37,7 +37,7 @@ python shopifydb.py -v <store name> <api key> <api password> tripletex-generate 
 
 If you make any manual changes to the invoice file, you may use the subcommand `tripletex-verify` to run the same irregularity tests on the edited file:
 ```bash
-python shopifydb.py -v <store name> <api key> <api password> tripletex-verify invoice.csv 144 vipps:Vipps stripe:Stripe
+python shopifydb.py -v <store name> <api key> <api password> tripletex-verify invoice.csv -g vipps:Vipps stripe:Stripe
 ```
 
 The invoice file is ready to be directly uploaded in Tripletex under 'Faktura > Fakturaimport'. Make sure to check the 'VAT included'-checkbox.
